@@ -30,6 +30,8 @@ class App{
 		this.setEnvironment();
 		
         //Add code here to code-along with the video
+        this.LoadingBar = new LoadingBar();
+        this.loadGLTF();
 
         this.controls = new OrbitControls( this.camera, this.renderer.domElement );
         
@@ -55,6 +57,29 @@ class App{
     }
     
     loadGLTF(){
+        const loader = new GLTFLoader().setPath('../../assets/plane/');
+
+        loader.load(
+            'microplane.glb',
+            gltf => {
+                this.scene.add(gltf.scene);
+
+                this.LoadingBar.visible = false;
+
+                this.renderer.setAnimationLoop( this.render.bind(this) );
+
+                this.plane = gltf.scene;
+
+            },
+            xhr => {
+                this.LoadingBar.progress = (xhr.loaded/xhr.total);
+
+            },
+            err => {
+                console.error( err );
+
+            }
+        )
         
     }
     
